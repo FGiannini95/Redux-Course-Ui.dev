@@ -130,7 +130,7 @@ const store = createStore(combineReducers);
 store.subscribe(() => {
   console.log("The new state is: ", store.getState());
 });
-
+/*
 store.dispatch(
   addTodoAction({
     id: 0,
@@ -174,3 +174,42 @@ store.dispatch(
 );
 
 store.dispatch(removeGoalAction(0));
+*/
+
+// DOM code
+function generateId() {
+  return (
+    Math.random().toString(36).substring(2) + new Date().getTime().toString(36)
+  );
+}
+
+function addTodo() {
+  // grab the input field and dispatch an action
+  const input = document.getElementById("todo");
+  const name = input.value;
+  input.value = "";
+
+  store.dispatch(
+    addTodoAction({
+      id: generateId(),
+      name,
+      complete: false,
+    })
+  );
+}
+
+function addGoal() {
+  const input = document.getElementById("goal");
+  const name = input.value;
+  input.value = "";
+
+  store.dispatch(
+    addGoalAction({
+      id: generateId(),
+      name,
+    })
+  );
+}
+
+document.getElementById("todoBtn").addEventListener("click", addTodo);
+document.getElementById("goalBtn").addEventListener("click", addGoal);
