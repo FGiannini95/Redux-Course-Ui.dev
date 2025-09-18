@@ -1,4 +1,5 @@
-// Library code, we really don't implemnt it, but we instally via npm
+// Library code
+// We really don't implemnt it, but we instally via npm (Redux.createStore fn below, does the same). Is is just for learning purpouse.
 function createStore(reducer) {
   // The store should have 4 parts:
   // 1. The state
@@ -23,7 +24,7 @@ function createStore(reducer) {
     listeners.forEach((listener) => listener());
   };
 
-  // When we create the store we invoke getState, subscribe and dispatch
+  // When we create the store we return an object with three function: getState, subscribe and dispatch
   return {
     getState,
     subscribe,
@@ -38,7 +39,7 @@ const TOGGLE_TODO = "TOGGLE_TODO";
 const ADD_GOAL = "ADD_GOAL";
 const REMOVE_GOAL = "REMOVE_GOAL";
 
-// Differents type of events that can eventually change the state of the store
+// Action creators = object representation of events that can occur in the application and eventually change the state of our store
 function addTodoAction(todo) {
   return {
     type: ADD_TODO,
@@ -109,37 +110,15 @@ function goals(state = [], action) {
   }
 }
 
-// With two reducer we want the following shape for our state (to get that structure we create the combineReducers function):
-/*
-{
-  todos:[],
-  goals:[],
-}
-*/
-
-// Reducer function. We use state = {} to avoid undefined values
-function combineReducers(state = {}, action) {
-  return {
-    todos: todos(state.todos, action), // Pass the slice of the state tree they care about
-    goals: goals(state.goals, action), // Pass the slice of the state tree they care about
-  };
-}
-
-const store = createStore(combineReducers);
-/*
-  With Redux the create function looks like this:
-  const store = Redux.createStore(Redux.combineReducers({
+const store = Redux.createStore(
+  Redux.combineReducers({
     todos,
     goals,
-  }))
-*/
+  })
+);
 
 store.subscribe(() => {
-  console.log("The new state is: ", store.getState());
-
   const { todos, goals } = store.getState();
-  console.log("todos", todos);
-  console.log("goals", goals);
 
   // Reset element in order to avoid duplication in the Ui
   document.getElementById("goals").innerHTML = "";
@@ -149,16 +128,16 @@ store.subscribe(() => {
   goals.forEach(addGoalToDOM);
 });
 
-// It takes the state form our store and update the Ui, displaying or removing items
 // DOM code
+// We take the state from our store and update the Ui, displaying or removing items
 
-// Generate random Id
 function generateId() {
   return (
     Math.random().toString(36).substring(2) + new Date().getTime().toString(36)
   );
 }
 
+// Change the state
 function addTodo() {
   // grab the input field and dispatch an action
   const input = document.getElementById("todo");
@@ -173,7 +152,7 @@ function addTodo() {
     })
   );
 }
-
+// Change the state
 function addGoal() {
   const input = document.getElementById("goal");
   const name = input.value;
@@ -195,6 +174,7 @@ function createRemoveButton(onClick) {
   return removeBtn;
 }
 
+// Render the new state
 function addTodoToDom(todo) {
   // Create the Todo item
   const node = document.createElement("li");
@@ -219,6 +199,7 @@ function addTodoToDom(todo) {
   document.getElementById("todos").appendChild(node);
 }
 
+// Render the new state
 function addGoalToDOM(goal) {
   // Create the Goal item
   const node = document.createElement("li");
