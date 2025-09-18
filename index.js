@@ -110,8 +110,10 @@ function goals(state = [], action) {
   }
 }
 
-// Reducer function
-function checkAndDispatch(store, action) {
+// Middleware function
+// next = or the next Middleware in the Middleware chain or the dispatch function
+
+const checker = (store) => (next) => (action) => {
   // Todo section
   if (
     action.type === ADD_TODO &&
@@ -128,14 +130,15 @@ function checkAndDispatch(store, action) {
     return alert("Nope. That's a bad idea.");
   }
 
-  return store.dispatch(action);
-}
+  return next(action);
+};
 
 const store = Redux.createStore(
   Redux.combineReducers({
     todos,
     goals,
-  })
+  }),
+  Redux.applyMiddleware(checker)
 );
 
 store.subscribe(() => {
@@ -165,8 +168,7 @@ function addTodo() {
   const name = input.value;
   input.value = "";
 
-  checkAndDispatch(
-    store,
+  store.dispatch(
     addTodoAction({
       id: generateId(),
       name,
@@ -180,8 +182,7 @@ function addGoal() {
   const name = input.value;
   input.value = "";
 
-  store.checkAndDispatch(
-    store,
+  store.dispatch(
     addGoalAction({
       id: generateId(),
       name,
@@ -205,7 +206,7 @@ function addTodoToDom(todo) {
 
   // Create the remove button
   const removeBtn = createRemoveButton(() => {
-    checkAndDispatch(store, removeTodoAction(todo.id));
+    store.dispatch(removeTodoAction(todo.id));
   });
 
   // Render in the Ui the newest elements
@@ -216,7 +217,7 @@ function addTodoToDom(todo) {
   node.style.textDecoration = todo.complete ? "line-through" : "none";
 
   node.addEventListener("click", () => {
-    checkAndDispatch(store, toggleTodoAction(todo.id));
+    store.dispatch(toggleTodoAction(todo.id));
   });
 
   document.getElementById("todos").appendChild(node);
@@ -230,7 +231,7 @@ function addGoalToDOM(goal) {
 
   // Create the remove button
   const removeBtn = createRemoveButton(() => {
-    checkAndDispatch(store, removeGoalAction(goal.id));
+    store.dispatch(removeGoalAction(goal.id));
   });
 
   // Render in the Ui the newest elements
