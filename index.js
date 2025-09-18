@@ -112,7 +112,6 @@ function goals(state = [], action) {
 
 // Middleware function
 // next = or the next Middleware in the Middleware chain or the dispatch function
-
 const checker = (store) => (next) => (action) => {
   // Todo section
   if (
@@ -133,12 +132,23 @@ const checker = (store) => (next) => (action) => {
   return next(action);
 };
 
+// Middleware function
+const logger = (store) => (next) => (action) => {
+  console.group(action.type);
+  console.log("The action: ", action);
+  const result = next(action);
+  console.log("The new state: ", store.getState());
+  console.groupEnd();
+
+  return result;
+};
+
 const store = Redux.createStore(
   Redux.combineReducers({
     todos,
     goals,
   }),
-  Redux.applyMiddleware(checker)
+  Redux.applyMiddleware(checker, logger)
 );
 
 store.subscribe(() => {
