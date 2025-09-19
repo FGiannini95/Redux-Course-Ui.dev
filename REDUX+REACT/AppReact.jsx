@@ -21,16 +21,17 @@ const Todos = ({ store, todos }) => {
   const addItem = (e) => {
     e.preventDefault();
     const name = inputRef.current.value.trim();
-    inputRef.current.value = "";
 
-    // Update state locally
-    store.dispatch(
-      window.addTodoAction({
-        id: window.generateId(),
-        name,
-        complete: false,
+    // Update state in the database
+    return API.saveTodo(name)
+      .then((todo) => {
+        // Update state locally
+        store.dispatch(window.addTodoAction(todo));
+        inputRef.current.value = "";
       })
-    );
+      .catch(() => {
+        alert("There ws an error, try again");
+      });
   };
 
   // Optimistic update
@@ -75,15 +76,17 @@ const Goals = ({ store, goals }) => {
   const addItem = (e) => {
     e.preventDefault();
     const name = inputRef.current.value.trim();
-    inputRef.current.value = "";
 
-    // Update state locally
-    store.dispatch(
-      addGoalAction({
-        id: window.generateId(),
-        name,
+    // Update state in the database
+    return API.saveGoal(name)
+      .then((goal) => {
+        // Update state locally
+        store.dispatch(window.addGoalAction(goal));
+        inputRef.current.value = "";
       })
-    );
+      .catch(() => {
+        alert("There ws an error, try again");
+      });
   };
 
   // Optimistic update
