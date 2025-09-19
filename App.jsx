@@ -1,12 +1,16 @@
-const List = () => {
+const List = ({ item }) => {
   return (
     <ul>
-      <li>List</li>
+      {item.map((item) => (
+        <li key={item.id}>
+          <span>{item.name}</span>
+        </li>
+      ))}
     </ul>
   );
 };
 
-const Todos = ({ store }) => {
+const Todos = ({ store, todos }) => {
   const inputRef = React.useRef(null);
   const addItem = (e) => {
     e.preventDefault();
@@ -27,12 +31,12 @@ const Todos = ({ store }) => {
       <h1>Todo List with React</h1>
       <input type="text" placeholder="Add Todo with React" ref={inputRef} />
       <button onClick={addItem}>Add Todo with React</button>
-      <List />
+      <List item={todos} />
     </div>
   );
 };
 
-const Goals = () => {
+const Goals = ({ store, goals }) => {
   const inputRef = React.useRef(null);
   const addItem = (e) => {
     e.preventDefault();
@@ -52,16 +56,27 @@ const Goals = () => {
       <h1>Goal List with React</h1>
       <input type="text" placeholder="Add Goal with React" ref={inputRef} />
       <button onClick={addItem}>Add Todo with React</button>
-      <List />
+      <List item={goals} />
     </div>
   );
 };
 
 function App({ store }) {
+  // Force a re-render on store updates (no new libs)
+  const [, forceRender] = React.useReducer((x) => x + 1, 0);
+
+  // Subscribe on mount, unscribe on unmount
+  React.useEffect(() => {
+    const unsubscribe = store.subscribe(forceRender);
+    return unsubscribe;
+  }, [store]);
+
+  const { todos, goals } = store.getState();
+
   return (
     <div>
-      <Todos store={store} />
-      <Goals store={store} />
+      <Todos store={store} todos={todos} />
+      <Goals store={store} goals={goals} />
     </div>
   );
 }
