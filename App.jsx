@@ -1,9 +1,14 @@
-const List = ({ items, remove }) => {
+const List = ({ items, remove, toggle }) => {
   return (
     <ul>
       {items.map((item) => (
         <li key={item.id}>
-          <span>{item.name}</span>
+          <span
+            onClick={() => toggle && toggle(item.id)}
+            style={{ textDecoration: item.complete ? "line-through" : "none" }}
+          >
+            {item.name}
+          </span>
           <button onClick={() => remove(item)}>X</button>
         </li>
       ))}
@@ -31,12 +36,16 @@ const Todos = ({ store, todos }) => {
     store.dispatch(removeTodoAction(todo.id));
   };
 
+  const toggleItem = (id) => {
+    store.dispatch(toggleTodoAction(id));
+  };
+
   return (
     <div>
       <h1>Todo List with React</h1>
       <input type="text" placeholder="Add Todo with React" ref={inputRef} />
       <button onClick={addItem}>Add Todo with React</button>
-      <List items={todos} remove={removeItem} />
+      <List items={todos} remove={removeItem} toggle={toggleItem} />
     </div>
   );
 };
