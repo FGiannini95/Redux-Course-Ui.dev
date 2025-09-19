@@ -42,14 +42,22 @@ const Todos = ({ store, todos }) => {
     store.dispatch(removeTodoAction(todo.id));
     // Update state in the database
     return API.deleteTodo(todo.id).catch(() => {
+      // Rollback
       store.dispatch(addTodoAction(todo));
       alert("An error occured, try again");
     });
   };
 
-  // Update state locally
+  // Optimistic update
   const toggleItem = (id) => {
+    // Update state locally
     store.dispatch(toggleTodoAction(id));
+    // Update state in the database
+    return API.saveTodoToggle(id).catch(() => {
+      //Rollback
+      store.dispatch(toggleTodoAction(id));
+      alert("An error occured, try again");
+    });
   };
 
   return (
@@ -84,6 +92,7 @@ const Goals = ({ store, goals }) => {
     store.dispatch(removeGoalAction(goal.id));
     // Update state in the database
     return API.deleteGoal(goal.id).catch(() => {
+      // Rollback
       store.dispatch(addGoalAction(goal));
       alert("An error occured, try again");
     });
