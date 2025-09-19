@@ -23,6 +23,7 @@ const Todos = ({ store, todos }) => {
     const name = inputRef.current.value.trim();
     inputRef.current.value = "";
 
+    // Update state locally
     store.dispatch(
       window.addTodoAction({
         id: window.generateId(),
@@ -32,10 +33,21 @@ const Todos = ({ store, todos }) => {
     );
   };
 
+  // Optimistic update
+  // we remove locally even before than from the database in order to give an instant feedback in the Ui
+  // if the request fails, we need to re-add the item back
+
   const removeItem = (todo) => {
+    // Update state locally
     store.dispatch(removeTodoAction(todo.id));
+    // Update state in the database
+    return API.deleteTodo(todo.id).catch(() => {
+      store.dispatch(addTodoAction(todo));
+      alert("An error occured, try again");
+    });
   };
 
+  // Update state locally
   const toggleItem = (id) => {
     store.dispatch(toggleTodoAction(id));
   };
@@ -57,6 +69,7 @@ const Goals = ({ store, goals }) => {
     const name = inputRef.current.value.trim();
     inputRef.current.value = "";
 
+    // Update state locally
     store.dispatch(
       addGoalAction({
         id: window.generateId(),
@@ -65,8 +78,15 @@ const Goals = ({ store, goals }) => {
     );
   };
 
+  // Optimistic update
   const removeItem = (goal) => {
+    // Update state locally
     store.dispatch(removeGoalAction(goal.id));
+    // Update state in the database
+    return API.deleteGoal(goal.id).catch(() => {
+      store.dispatch(addGoalAction(goal));
+      alert("An error occured, try again");
+    });
   };
 
   return (
@@ -91,9 +111,11 @@ function AppReact({ store }) {
 
   const { todos, goals, loading } = store.getState();
 
-  Promise.all([API.fetchTodos(), API.fetchGoals()]).then(([todos, goals]) => {
-    store.dispatch(receiveDataAction(todos, goals));
-  });
+  React.useEffect(() => {
+    Promise.all([API.fetchTodos(), API.fetchGoals()]).then(([todos, goals]) => {
+      store.dispatch(receiveDataAction(todos, goals));
+    });
+  }, []);
 
   if (loading) return <h3>Loading...</h3>;
 
