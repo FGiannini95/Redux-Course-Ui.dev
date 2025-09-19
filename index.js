@@ -253,3 +253,7 @@ function addGoalToDOM(goal) {
 
 document.getElementById("todoBtn").addEventListener("click", addTodo);
 document.getElementById("goalBtn").addEventListener("click", addGoal);
+
+window.store = store;
+window.addTodoAction = addTodoAction;
+window.generateId = generateId;
