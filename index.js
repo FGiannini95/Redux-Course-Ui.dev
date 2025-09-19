@@ -258,3 +258,4 @@ window.store = store;
 window.addTodoAction = addTodoAction;
 window.addGoalAction = addGoalAction;
 window.generateId = generateId;
+window.removeTodoAction = removeTodoAction;

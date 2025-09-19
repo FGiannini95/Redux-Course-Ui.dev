@@ -1,9 +1,10 @@
-const List = ({ item }) => {
+const List = ({ items, remove }) => {
   return (
     <ul>
-      {item.map((item) => (
+      {items.map((item) => (
         <li key={item.id}>
           <span>{item.name}</span>
+          <button onClick={() => remove(item)}>X</button>
         </li>
       ))}
     </ul>
@@ -26,12 +27,16 @@ const Todos = ({ store, todos }) => {
     );
   };
 
+  const removeItem = (todo) => {
+    store.dispatch(removeTodoAction(todo.id));
+  };
+
   return (
     <div>
       <h1>Todo List with React</h1>
       <input type="text" placeholder="Add Todo with React" ref={inputRef} />
       <button onClick={addItem}>Add Todo with React</button>
-      <List item={todos} />
+      <List items={todos} remove={removeItem} />
     </div>
   );
 };
@@ -51,12 +56,16 @@ const Goals = ({ store, goals }) => {
     );
   };
 
+  const removeItem = (goal) => {
+    store.dispatch(removeGoalAction(goal.id));
+  };
+
   return (
     <div>
       <h1>Goal List with React</h1>
       <input type="text" placeholder="Add Goal with React" ref={inputRef} />
       <button onClick={addItem}>Add Todo with React</button>
-      <List item={goals} />
+      <List items={goals} remove={removeItem} />
     </div>
   );
 };
