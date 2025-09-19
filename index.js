@@ -256,4 +256,5 @@ document.getElementById("goalBtn").addEventListener("click", addGoal);
 
 window.store = store;
 window.addTodoAction = addTodoAction;
+window.addGoalAction = addGoalAction;
 window.generateId = generateId;

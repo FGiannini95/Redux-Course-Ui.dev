@@ -24,7 +24,7 @@ const Todos = ({ store }) => {
 
   return (
     <div>
-      <h1>To List with React</h1>
+      <h1>Todo List with React</h1>
       <input type="text" placeholder="Add Todo with React" ref={inputRef} />
       <button onClick={addItem}>Add Todo with React</button>
       <List />
@@ -33,9 +33,25 @@ const Todos = ({ store }) => {
 };
 
 const Goals = () => {
+  const inputRef = React.useRef(null);
+  const addItem = (e) => {
+    e.preventDefault();
+    const name = inputRef.current.value.trim();
+    inputRef.current.value = "";
+
+    store.dispatch(
+      addGoalAction({
+        id: window.generateId(),
+        name,
+      })
+    );
+  };
+
   return (
     <div>
-      GOALS
+      <h1>Goal List with React</h1>
+      <input type="text" placeholder="Add Goal with React" ref={inputRef} />
+      <button onClick={addItem}>Add Todo with React</button>
       <List />
     </div>
   );
@@ -45,7 +61,7 @@ function App({ store }) {
   return (
     <div>
       <Todos store={store} />
-      <Goals />
+      <Goals store={store} />
     </div>
   );
 }
