@@ -91,6 +91,10 @@ function AppReact({ store }) {
 
   const { todos, goals } = store.getState();
 
+  Promise.all([API.fetchTodos(), API.fetchGoals()]).then(([todos, goals]) => {
+    store.dispatch(receiveDataAction(todos, goals));
+  });
+
   return (
     <div>
       <Todos store={store} todos={todos} />

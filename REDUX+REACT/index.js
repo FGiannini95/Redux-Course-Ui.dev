@@ -38,6 +38,7 @@ const REMOVE_TODO = "REMOVE_TODO";
 const TOGGLE_TODO = "TOGGLE_TODO";
 const ADD_GOAL = "ADD_GOAL";
 const REMOVE_GOAL = "REMOVE_GOAL";
+const RECEIVE_DATA = "RECEIVE_DATA";
 
 // Action creators = object representation of events that can occur in the application and eventually change the state of our store
 function addTodoAction(todo) {
@@ -75,6 +76,14 @@ function removeGoalAction(id) {
   };
 }
 
+function receiveDataAction(todos, goals) {
+  return {
+    type: RECEIVE_DATA,
+    todos,
+    goals,
+  };
+}
+
 // Reducer function. We use state = [] to avoid undefined values
 function todos(state = [], action) {
   // Reducer generally handle lots of case, switch statement is better than if/else block
@@ -93,6 +102,8 @@ function todos(state = [], action) {
             // -asign a new vale to the complete property
             Object.assign({}, todo, { complete: !todo.complete })
       );
+    case RECEIVE_DATA:
+      return action.todos;
     default:
       return state;
   }
@@ -105,6 +116,8 @@ function goals(state = [], action) {
       return state.concat([action.goal]);
     case REMOVE_GOAL:
       return state.filter((goal) => goal.id !== action.id);
+    case RECEIVE_DATA:
+      return action.goals;
     default:
       return state;
   }
