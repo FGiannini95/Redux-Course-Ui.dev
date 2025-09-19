@@ -89,11 +89,13 @@ function AppReact({ store }) {
     return unsubscribe;
   }, [store]);
 
-  const { todos, goals } = store.getState();
+  const { todos, goals, loading } = store.getState();
 
   Promise.all([API.fetchTodos(), API.fetchGoals()]).then(([todos, goals]) => {
     store.dispatch(receiveDataAction(todos, goals));
   });
+
+  if (loading) return <h3>Loading...</h3>;
 
   return (
     <div>

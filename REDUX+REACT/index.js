@@ -123,6 +123,16 @@ function goals(state = [], action) {
   }
 }
 
+// Reducer function
+function loading(state = true, action) {
+  switch (action.type) {
+    case RECEIVE_DATA:
+      return false;
+    default:
+      return state;
+  }
+}
+
 // Middleware function
 // next = or the next Middleware in the Middleware chain or the dispatch function
 const checker = (store) => (next) => (action) => {
@@ -160,6 +170,7 @@ const store = Redux.createStore(
   Redux.combineReducers({
     todos,
     goals,
+    loading,
   }),
   Redux.applyMiddleware(checker, logger)
 );
